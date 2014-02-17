@@ -33,12 +33,15 @@ def look_for_text(txt):
     for i in range(len(ctxts[0]) - len(txt) + 1):
         for m in range(len(ctxts)):
             valid = True
+            useful = False
             answer_copy = [l[:] for l in answer]
             for j in range(len(txt)):
+                if answer_copy[m][i+j] == None:
+                    useful = True
                 if answer_copy[m][i+j] != None and answer_copy[m][i+j] != txt[j]:
                     valid = False
                 answer_copy[m][i+j] = txt[j]
-            if not valid:
+            if not valid or not useful:
                 continue
             vals = [ctxts[m][i + j] ^ ord(txt[j]) for j in range(len(txt))]
             padpart = []
@@ -73,34 +76,18 @@ def look_for_text(txt):
                     answer = answer_copy
     if original != answer:
         archived_answers["undo"] = original
-##
-##f = open("output.txt", "w")
-##
-##
-##for i in range(0, 56):
-##  for m in range(10):
-##    f.write("------------------------------------------- "+ str(i) + " " + str(m) + "\n")
-##    vals = [ctxts[m][i + j] ^ ord("the "[j]) for j in range(4)]
-##    padpart = []
-##    for j in range(4):
-##      if i+j == 0:
-##        padpart.append(vals[j])
-##      else:
-##        padpart.append((vals[j] + 256 - ctxts[m][i+j-1])%256)
-##    s = ""
-##    valid = True
-##    for other in range(10):
-##      if other != m:
-##        for j in range(4):
-##          if i+j == 0:
-##            c = padpart[j] ^ ctxts[other][i+j]
-##          else:
-##            c = ((padpart[j] + ctxts[other][i+j-1])%256) ^ ctxts[other][i+j]
-##          if c < 128:
-##            s+=unichr(c)
-##          else:
-##            valid = False
-##        s+= "\n"
-##    if valid:
-##      f.write(s)
-##f.close()
+
+def Help():
+    print """use the following commands to crack the code:
+Help() to get help
+print_answer() to print what you currently think the messages look like
+archive(arg) to save your current guess under the key arg
+restore(arg) to restore a previous level of knowledge (i.e. if you mess up)
+print_answer(arg) to print what a particular saved guess looks like
+look_for_text(txt) to guess part of the message and see where it could fit
+ - enter y or yes to accept a potential location of the guessed message text
+ - enter anything else to reject
+
+the archive comes preset with a zero-knowledge setup saved under "restart", so you can use restore("restart") to restart"""
+
+Help()
