@@ -117,7 +117,7 @@ A suffix tree can be generated from a string in linear time.
 TODO
 \end{proof}
 
-We are given $l(n) = poly(n)$ $n$-bit cyphertexts ($c_0$ through $c_{l(n) -1}$) with one instance of pad reuse. Let $\Sigma$ be the following alphabet: $\{0,1\}\cup \{\$0, \$1, \$2, ..., \$(l(n) - 1)\}$. In $\Sigma$, $\$i$ is treated as a single character. We will construct a string $s$ of length $l(n)\times (n+1)$ by the following rule: $s = s_0\|s_1\|...\|s_{l(n) -1}$, where $s_i = c_i \| \$i$.
+We are given $l(n) = poly(n)$ $n$-bit ciphertexts ($c_0$ through $c_{l(n) -1}$) with one instance of pad reuse. Let $\Sigma$ be the following alphabet: $\{0,1\}\cup \{\$0, \$1, \$2, ..., \$(l(n) - 1)\}$. In $\Sigma$, $\$i$ is treated as a single character. We will construct a string $s$ of length $l(n)\times (n+1)$ by the following rule: $s = s_0\|s_1\|...\|s_{l(n) -1}$, where $s_i = c_i \| \$i$.
 
 The next step is to generate a suffix tree. By Lemma 3, this can be done in linear time. 
 
