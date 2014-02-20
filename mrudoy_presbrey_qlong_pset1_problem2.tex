@@ -254,8 +254,7 @@ def look_for_text(txt):
     original = answer
     for i in range(len(ctxts[0]) - len(txt) + 1):
         for m in range(len(ctxts)):
-            valid = True
-            useful = False
+            valid, useful = True, False
             answer_copy = [l[:] for l in answer]
             for j in range(len(txt)):
                 if answer_copy[m][i+j] == None:
@@ -283,7 +282,8 @@ def look_for_text(txt):
                             c = (padpart[j] + ctxts[otherm][i+j-1])%256
                             c = c ^ ctxts[otherm][i+j]
                         valid = valid and (c < 128)
-                        if answer_copy[otherm][i+j] and ord(answer_copy[otherm][i+j]) != c:
+                        if answer_copy[otherm][i+j]:
+                            if ord(answer_copy[otherm][i+j]) != c:
                                 valid = False
                         answer_copy[otherm][i+j] = unichr(c)
             if valid:
@@ -299,9 +299,5 @@ def look_for_text(txt):
                     answer = answer_copy
     if original != answer:
         archived_answers["undo"] = original
-
-
 \end{verbatim}
 \end{document}
-
-
