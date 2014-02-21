@@ -110,17 +110,36 @@ We have seen that $g(x) = \Theta(x)$, and that $\hat{f}(x) = \omega(x)$, so $\ha
 
 \section*{1-3c)}
 
-\begin{Lemma}
-A suffix tree can be generated from a string in linear time.
-\end{Lemma}
-\begin{proof}
-TODO
-\end{proof}
+We will describe (and prove the correctness of) an algorithm to find an instance of pad reuse:
 
-We are given $l(n) = poly(n)$ $n$-bit ciphertexts ($c_0$ through $c_{l(n) -1}$) with one instance of pad reuse. Let $\Sigma$ be the following alphabet: $\{0,1\}\cup \{\$0, \$1, \$2, ..., \$(l(n) - 1)\}$. In $\Sigma$, $\$i$ is treated as a single character. We will construct a string $s$ of length $l(n)\times (n+1)$ by the following rule: $s = s_0\|s_1\|...\|s_{l(n) -1}$, where $s_i = c_i \| \$i$.
+We are given $l(n) = poly(n)$ $n$-bit ciphertexts ($c_0$ through $c_{l(n) -1}$) with one instance of pad reuse. Let $\Sigma=\{0,1,2,...,l(n)-1\}\cup \{(a,b) : a \in \{0,1\} \text{ and } b \in \{0,1,2,...,n-1\}\}$. We will construct a string $s$ of length $l(n)\times (n+1)$ in $\Sigma^*$ using the following rule: $s = s_0\|s_1\|...\|s_{l(n) -1}$, where each $s_i$ is a string in $\Sigma^{n+1}$ determined by $c_i$.
 
-The next step is to generate a suffix tree. By Lemma 3, this can be done in linear time. 
+Let $(c_i)_j$ be the $j$th bit of $c_i$ and let $(s_i)_j$ be the $j$th character of $s_i$. We define $s_i$ as follows: $(s_i)_j = ((c_i)_j, j)$ for $0 \le j \le n-1$ and $(s_i)_n = i$.
 
-We can also find the deepest non-leaf node in the tree in linear time. The sequence of nodes from the root to this node correspond with the longest substring repeated in $s$. Call this substring $t$. The characters $\$i$ appear exactly once in $s$. Thus, since $t$ occurs at least twice in $s$, we know that none of the $\$i$ are contained in $t$. Thus, $t$ must be a string in $\{0,1\}^{*}$. The only
+The next step is to generate a suffix tree for $s$. Using the suffix tree, the longest repeated substring can be found. 
+
+Let $t$ be a repeated substring of $s$. $t$ occurs twice in $s$, so every character in $t$ occurs at least twice in $s$. The characters in the set $\{0,1,2,...,l(n)-1\}$ each occur exactly once in $s$, so $t$ does not contain any of these characters.
+
+We have seen that $t$ consists only of characters in $ \{(a,b) : a \in \{0,1\} \text{ and } b \in \{0,1,2,...,n-1\}\}$. Since the only contiguous runs of these characters are the regions from the first to the $n$th character of the strings $s_i$, we know that $t$ must be entirely contained in the first $n$ characters of $s_i$ for some $i$ between $0$ and $l(n)-1$. 
+
+Note that for each $i$, each of the first $n$ characters of $s_i$ is different. This is because these $n$ characters are ordered pairs where the second term is the position of the character in $s_i$; no two characters are in the same position, so no two characters have the same second term, and so no two characters are equal. Thus, since no character of $s_i$ is repeated, $t$ occurs as a substring of $s_i$ at most once. As a result, $t$ is a substring of at least two of the strings $s_i$.
+
+Consider any character in $t$. The character is an ordered pair whose second coordinate is the index of the character in whichever $s_i$ it is a substring of. The other coordinate is the bit of $c_i$ in the same position. Thus, since $t$ is a substring of at least two of the strings $s_i$, it corresponds with an identical run of bits in identical positions in 2 ciphertexts. In fact, the length of $t$ is the length of the run of bits. 
+
+We have shown that every repeated substring of $s$ corresponds with (and shares the length of) an identical run of bits in identical positions in two of the ciphertexts. It is easy to see that every run of bits that occurs in the same positions of two ciphertexts will result in an identical run of characters in the two $s_i$ which correspond with those ciphertexts. As a result, the longest repeated substring of $s$, call it $T$, which can be found using the suffix tree, will correspond with the longest identical run of bits in identical positions of two ciphertexts.
+
+The previous parts show that with high probability, two ciphertexts contain a long common run of identical bits in identical positions if and only if those two ciphertexts use the same pad. The problem guarantees that one instance of pad reuse is included, so the two ciphertexts which share a pad are expected to have the longest identical run of bits in identical positions of every pair of ciphertexts. If the two ciphertexts sharing a pad are $c_{i_1}$ and $c_{i_2}$, this tells us that $T$ is a substring of $s_{i_1}$ and of $s_{i_2}$ and of no other $s_i$. 
+
+At this point in the algorithm, we simply need to know which of the $s_i$ contains $T$ as a substring. The characters of $T$ specify which index of $s_i$ they should be found at, so we can simply go through the correct positions of every $s_i$ to determine the two indices $i_1$ and $i_2$ for which $T$ is a substring of $s_{i_1}$ and of $s_{i_2}$. Once we find those indices, we can conclude that the two ciphertexts sharing a pad are $c_{i_1}$ and $c_{i_2}$.
+
+We wish to show that the above algorithm runs in $O(N \log N)$ time where $N = l(n)n$ is the length of the ciphertexts combined.
+
+The first thing the algorithm does is compute $s$. $s$ is a string of length $l(n)\times (n+1) < 2nl(n) = 2N$. Each character is an element of $\Sigma$, which each take up approximately $\log l(n) < \log N$ bits. Thus $s$ takes up $2N \log N = O(N \log N)$ space. The computation of $s$ itself is simple, and requires only keeping track of two indices and using some simple logic to determine which character of $\Sigma$ to include next. The dominating time cost of computing $s$ comes from needing to write it all down, and this takes $O(N \log N)$ time. 
+
+The next action is to create a suffix tree for $s$ and find $T$, the longest repeated substring of $s$. We were given that this takes $O(|s| \log |s|)$ time. Since $N < |s| = l(n) \times(n+1) < 2N$, and since $|s| = \Theta(N)$, this part of the algorithm is also $O(N \log N)$. 
+
+After that, we can look up the range of indices of $s_{i_1}$ and $s_{i_2}$ which comprise $T$. This information is encoded in the characters of $T$. Looking through the different $s_i$, we can find the two correct indices by comparing $T$ with the proper region of $s_i$ for each $i$. This requires at most one comparison (which can take $O(\log N)$ time) per character of $s$, so again, this requires $O(N \log N)$ time.
+
+The indices found are the indices of the ciphertexts which share a pad. As you see, the entire algorithm runs in $O(N \log N)$ time, as desired.
 
 \end{document}
