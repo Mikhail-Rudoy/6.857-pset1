@@ -2,8 +2,8 @@ LATEX=latex
 DVIPS=dvips
 PS2PDF=ps2pdf
 
-INPUT=mrudoy_presbrey_qlong_pset1_problem2
-OUTPUT=mrudoy_presbrey_qlong_pset1_problem2
+INPUT=mrudoy_presbrey_qlong_pset1_problem3
+OUTPUT=mrudoy_presbrey_qlong_pset1_problem3
 
 
 all: dviclean $(OUTPUT).ps $(OUTPUT).pdf
