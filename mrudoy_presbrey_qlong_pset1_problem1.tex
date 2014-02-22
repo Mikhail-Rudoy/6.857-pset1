@@ -9,6 +9,8 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{latexsym}
+\usepackage{hyperref}
+
 \setlength{\parskip}{1pc}
 \setlength{\parindent}{0pt}
 \setlength{\topmargin}{-3pc}
@@ -21,10 +23,10 @@
 \newpage
 \noindent
 \framebox{
-	\vbox{
-		6.857 Homework \hfill {\bf \ps} \hfill \# #1  \\ 
-		\team \hfill \today
-	}
+  \vbox{
+    6.857 Homework \hfill {\bf \ps} \hfill \# #1  \\ 
+    \team \hfill \today
+  }
 }
 \bigskip
 
@@ -33,5 +35,157 @@
 
 \begin{document}
 \answer{1-1. Security Policy for Github}
-answer here
+
+\section*{Overview}
+
+Github is popular software for hosting Git, a distributed version control system that developers often use to collaborate on projects. The Github creators maintain a public instance on the web and allow other organizations to license private instances of the software.
+
+\par This policy pertains to the main Github instance, managed by its creators at \url{https://github.com/}
+
+%\par The security policies of the \url{https://github.com/} Github instance are centered around repositories. In particular, they address the question of who has permissions to perform which actions on the repositories. 
+
+\section*{Principals}
+
+There are 4 main principals of Github:
+
+\begin{description}
+
+\item[Anonymous users] have not authenticated to Github. They can only read public repos and limited user/organization metadata.
+
+\item[Authenticated users] have enrolled via account creation and authentication processes. They can read/write additional repos and metadata.
+
+\item[Site admins] are in charge of development, maintenance, and/or support of the website. They have permissions to everything.
+
+\item[The payment processor] is a trusted third-party handling subscription payments on the website.
+
+\end{description}
+
+\section*{Objects}
+The objects in Github are the main things on which actions are performed. There are 4 types of objects:
+
+% http://i.imgur.com/mShVoCr.png
+
+\begin{description}
+\item[repository (repo)] - contains project source files and data
+\item[organization (org)] - contains repos and teams
+\item[team] - a group of users granted permission to a subset of an organzation's repos
+\item[user] - can have repo ownership, team membership, and/or org ownership
+\end{description}
+
+\section*{Actions}
+
+% http://i.imgur.com/vbXVcYd.png
+
+\subsection*{Repositories}
+\begin{description}
+\item[create:] 
+Create a new repository on the server.
+\item[transfer ownership:] 
+Change the owner of a repository.
+\item[pull/clone:]
+Read the contents of all the files in the repository.
+\item[push:]
+Make changes to the codebase and commit to the repository.
+\item[delete:]
+Remove the entire repository (contents and metadata) from Github
+\item[add collaborator:]
+Allow a registered user to push to the repository
+\item[remove collaborator:]
+Remove a registered user as a push
+\item[submit pull request:]
+Notify upstream authors of relevant changes in a separate fork
+\end{description}
+
+\subsection*{Organizations}
+\begin{description}
+\item[create org:]
+Create a new org.
+\item[create team:]
+Create a team in the org.
+\item[remove team:]
+Remove a team in the org.
+\item[add repo:]
+Create a repo in the org.
+\item[remove repo:]
+Remove a repo (contents and metadata) from the org.
+\end{description}
+
+\subsection*{Teams}
+\begin{description}
+\item[view:]
+See team name and members.
+\item[add member:]
+Add a registered user to the team.
+\item[remove member:]
+Remove a registered user from the team.
+\item[add repo:]
+Give team members permission to a repo.
+\item[remove repo:]
+Remove team members from access to a repo.
+\item[edit permissions level:]
+Change permissions granted to team members.
+\end{description}
+
+\subsection*{Users}
+\begin{description}
+\item[create:]
+Register for an account on Github
+\item[delete:]
+Delete an account and all associated repositories and permissions
+\item[edit:]
+Update account metadata (i.e. email, ssh keys, username, etc)
+\end{description}
+
+\section*{Permissions}
+The actions that a user can perform are grouped into permissions. Depending on whether a user has a particular set of permissions, they are allowed or restricted from a given set of actions.
+\begin{description}
+\item[Repo read permissions] include the ability to clone/pull and to submit a pull request.
+\item[Team read permissions] include read permissions to all team repos.
+\item[Repo write permissions] include the ability to push in addition to the read permissions.
+\item[Team write permissions] include write permissions to all team repos.
+\item[Repo owner permissions] include the ability to delete the repository, transfer ownership of the repository to another user, and add or remove a collaborator. Admin permissions also include all of the write permissions.
+\item[Team admin permissions] include read/write to all team repos, repo owner permissions for team repos, and allows creating new team repos.
+\item[Organization owner permissions] include the ability to take any Organization or Team related action.
+\end{description}
+
+% https://help.github.com/articles/what-are-the-different-access-permissions
+% teams by example:
+% http://i.imgur.com/DCTMPtU.png
+% http://i.imgur.com/StUcoNi.png
+
+\section*{Roles}
+Registered users may act with one or many of the following roles. For user repos, individual users have permissions defined on a per-repository level, meaning that a registered user can be the owner of one repository, a collaborator for a second, and have no role with regard to a third. For organization repos, teams in that organization are granted permission levels and user permissions (and roles) are determined by their team membership. For details on the types of permissions, see the permissions section.
+
+\begin{description}
+
+\item[Repo viewers] have repo read permissions for the repository.
+\item[Repo collaborators] have repo write permissions for the repository.
+\item[Repo owners] are the users or organization accounts where a repository is hosted. Repo owners have repo owner permissions for the repository.
+\item[Team members] are users who are designated as part of a team in an organization. Members of the \texttt{Owners} team are granted organization owner permissions. Members of all other teams are granted team read, team write, or team admin permissions according to the permission level of the team.
+
+\end{description}
+
+\section*{Policies}
+\begin{itemize}
+\item Site admins are granted all permissions for all repositories.
+\item Registered users have permission to edit and delete their own account. Registered users can create new repositories and new organizations and are granted further permissions according to their roles.
+\item Anonymous users are also granted permissions according to their roles. All Anonymous users have the same roles.
+\end{itemize}
+
+Roles are granted in the following way:
+\begin{itemize}
+\item When a user repository is created, the registered user who creates it becomes the repo owner.
+\item When an organization is created, the registered user who creates it becomes a team member of the \texttt{Owners} team.
+\item All users are automatically repo viewers for all public repositories. 
+\item Users can gain further roles as a result of actions taken by users. For example, organization owners can create a team and add users to it and user repo owners can add collaborators to their repo.
+\end{itemize}
+
+
+\section*{Account Creation and Authentication}
+An unregistered user can register for an account on Github by supplying an email address, username, and password. Github will send a confirmation link to the supplied email, which the user can click on to confirm the registration. A user who has not confirmed the account registration will only have the privileges of an unregistered user until s/he confirms.
+
+\section*{Payment Policy}
+Registered users must subscribe monthly to create private repositories. The secure payment process (how the money goes from the user to GitHub safely) is handled by a trusted 3rd party payment company. We defer to their security policy for securely handling payment between the user and GitHub.
+
 \end{document}
+
